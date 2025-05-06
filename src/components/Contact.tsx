@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
+import { socialLinks, contactInfo } from '@/config';
+import { fadeInUpVariant } from '@/utils/animation';
 
 const Contact = () => {
   const { toast } = useToast();
@@ -42,9 +44,9 @@ const Contact = () => {
       
       <div className="container mx-auto px-4 z-10 relative">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          initial="hidden"
+          whileInView="visible"
+          variants={fadeInUpVariant}
           viewport={{ once: true }}
           className="text-center mb-16"
         >
@@ -142,8 +144,8 @@ const Contact = () => {
                     <Mail className="text-primary mt-1 mr-3" size={20} />
                     <div>
                       <h4 className="text-sm font-medium">Email</h4>
-                      <a href="mailto:arpit.singhal@example.com" className="text-foreground/70 hover:text-primary transition-colors">
-                        arpit.singhal@example.com
+                      <a href={`mailto:${contactInfo.email}`} className="text-foreground/70 hover:text-primary transition-colors">
+                        {contactInfo.email}
                       </a>
                     </div>
                   </div>
@@ -155,7 +157,7 @@ const Contact = () => {
                 
                 <div className="grid grid-cols-1 gap-4">
                   <a 
-                    href="https://github.com" 
+                    href={socialLinks.github}
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="flex items-center p-4 bg-card/50 rounded-lg hover:bg-primary/10 transition-colors"
@@ -165,7 +167,7 @@ const Contact = () => {
                   </a>
                   
                   <a 
-                    href="https://linkedin.com" 
+                    href={socialLinks.linkedin}
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="flex items-center p-4 bg-card/50 rounded-lg hover:bg-primary/10 transition-colors"
@@ -175,7 +177,7 @@ const Contact = () => {
                   </a>
                   
                   <a 
-                    href="https://trailblazer.me" 
+                    href={socialLinks.trailhead}
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="flex items-center p-4 bg-card/50 rounded-lg hover:bg-primary/10 transition-colors"

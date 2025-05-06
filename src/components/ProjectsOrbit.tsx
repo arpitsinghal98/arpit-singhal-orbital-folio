@@ -1,82 +1,15 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Github, ExternalLink, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-
-type Project = {
-  id: number;
-  title: string;
-  description: string;
-  technologies: string[];
-  image: string;
-  demoUrl: string;
-  codeUrl: string;
-};
-
-const projects: Project[] = [
-  {
-    id: 1,
-    title: 'AI-Powered Analytics Platform',
-    description: 'Enterprise dashboard with predictive analytics capabilities, real-time monitoring, and customizable data visualizations.',
-    technologies: ['React', 'Python', 'TensorFlow', 'AWS', 'GraphQL'],
-    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-    demoUrl: '#',
-    codeUrl: '#',
-  },
-  {
-    id: 2,
-    title: 'Cloud-Native Microservices Architecture',
-    description: 'Scalable microservices platform with containerization, service mesh, and automated deployment pipelines.',
-    technologies: ['Kubernetes', 'Docker', 'Go', 'Istio', 'Terraform'],
-    image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-    demoUrl: '#',
-    codeUrl: '#',
-  },
-  {
-    id: 3,
-    title: 'Real-Time Collaboration Tool',
-    description: 'Interactive workspace allowing teams to collaborate on documents, designs, and code in real-time.',
-    technologies: ['WebSockets', 'React', 'Node.js', 'MongoDB', 'Redis'],
-    image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-    demoUrl: '#',
-    codeUrl: '#',
-  },
-  {
-    id: 4,
-    title: 'Serverless E-commerce Backend',
-    description: 'Fully serverless backend infrastructure for e-commerce platforms with event-driven architecture.',
-    technologies: ['AWS Lambda', 'DynamoDB', 'API Gateway', 'EventBridge', 'CDK'],
-    image: 'https://images.unsplash.com/photo-1556742031-c6961e8560b0?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-    demoUrl: '#',
-    codeUrl: '#',
-  },
-  {
-    id: 5,
-    title: 'Machine Learning Operations Platform',
-    description: 'End-to-end MLOps solution for model training, versioning, deployment, and monitoring in production environments.',
-    technologies: ['Python', 'Kubernetes', 'TensorFlow', 'Kubeflow', 'GitOps'],
-    image: 'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-    demoUrl: '#',
-    codeUrl: '#',
-  },
-];
+import { projects, Project } from '@/data/projects';
+import { calculateOrbitPosition, fadeInUpVariant } from '@/utils/animation';
 
 const ProjectsOrbit = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [orbitPaused, setOrbitPaused] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   
-  const calculatePosition = (index: number, total: number) => {
-    const angle = (index / total) * Math.PI * 2;
-    const radius = 150; // Orbit radius
-    const x = Math.cos(angle) * radius;
-    const y = Math.sin(angle) * radius * 0.3; // Flatten the orbit a bit
-    const z = Math.sin(angle) * radius;
-
-    return { x, y, z };
-  };
-
   const handleProjectClick = (project: Project) => {
     setSelectedProject(project);
     setOrbitPaused(true);
@@ -116,9 +49,9 @@ const ProjectsOrbit = () => {
       
       <div className="container mx-auto px-4 z-10">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          initial="hidden"
+          whileInView="visible"
+          variants={fadeInUpVariant}
           viewport={{ once: true }}
           className="text-center mb-16"
         >
@@ -143,7 +76,7 @@ const ProjectsOrbit = () => {
           {/* Orbit elements */}
           <div className="relative w-[300px] h-[300px] mx-auto" style={{ transformStyle: 'preserve-3d' }}>
             {projects.map((project, index) => {
-              const { x, y, z } = calculatePosition(index, projects.length);
+              const { x, y, z } = calculateOrbitPosition(index, projects.length, 150);
               
               return (
                 <motion.div

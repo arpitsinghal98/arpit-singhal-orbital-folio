@@ -3,6 +3,27 @@ import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ChevronDown } from 'lucide-react';
+import { siteMetadata } from '@/config';
+import { fadeInVariants } from '@/utils/animation';
+
+// Define signature path points outside component for better organization
+const signaturePath = [
+  // A
+  [0.2, 0.8], [0.25, 0.3], [0.3, 0.8],
+  [0.22, 0.6], [0.28, 0.6],
+  // r
+  [0.35, 0.6], [0.35, 0.5], [0.4, 0.5], [0.4, 0.6],
+  // p
+  [0.45, 0.4], [0.45, 0.8], [0.5, 0.6], [0.55, 0.7], [0.5, 0.8],
+  // i
+  [0.6, 0.5], [0.6, 0.6],
+  [0.6, 0.4], [0.6, 0.45],
+  // t
+  [0.65, 0.4], [0.65, 0.6],
+  [0.6, 0.5], [0.7, 0.5],
+  // S
+  [0.8, 0.5], [0.75, 0.55], [0.8, 0.6], [0.75, 0.65],
+];
 
 const Hero = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -30,25 +51,6 @@ const Hero = () => {
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
 
-    // Signature path points
-    const signaturePath = [
-      // A
-      [0.2, 0.8], [0.25, 0.3], [0.3, 0.8],
-      [0.22, 0.6], [0.28, 0.6],
-      // r
-      [0.35, 0.6], [0.35, 0.5], [0.4, 0.5], [0.4, 0.6],
-      // p
-      [0.45, 0.4], [0.45, 0.8], [0.5, 0.6], [0.55, 0.7], [0.5, 0.8],
-      // i
-      [0.6, 0.5], [0.6, 0.6],
-      [0.6, 0.4], [0.6, 0.45],
-      // t
-      [0.65, 0.4], [0.65, 0.6],
-      [0.6, 0.5], [0.7, 0.5],
-      // S
-      [0.8, 0.5], [0.75, 0.55], [0.8, 0.6], [0.75, 0.65],
-    ];
-
     let currentPoint = 0;
     let progress = 0;
 
@@ -57,23 +59,26 @@ const Hero = () => {
       
       ctx.beginPath();
       
-      for (let i = 0; i < currentPoint; i++) {
-        const [x, y] = signaturePath[i];
-        if (i === 0) {
-          ctx.moveTo(x * canvas.width, y * canvas.height);
-        } else {
+      // Only attempt to draw if we have points to work with
+      if (signaturePath.length > 0) {
+        for (let i = 0; i < currentPoint && i < signaturePath.length; i++) {
+          const [x, y] = signaturePath[i];
+          if (i === 0) {
+            ctx.moveTo(x * canvas.width, y * canvas.height);
+          } else {
+            ctx.lineTo(x * canvas.width, y * canvas.height);
+          }
+        }
+        
+        if (currentPoint < signaturePath.length) {
+          const [prevX, prevY] = signaturePath[currentPoint > 0 ? currentPoint - 1 : 0];
+          const [nextX, nextY] = signaturePath[currentPoint];
+          
+          const x = prevX + (nextX - prevX) * progress;
+          const y = prevY + (nextY - prevY) * progress;
+          
           ctx.lineTo(x * canvas.width, y * canvas.height);
         }
-      }
-      
-      if (currentPoint < signaturePath.length) {
-        const [prevX, prevY] = signaturePath[currentPoint > 0 ? currentPoint - 1 : 0];
-        const [nextX, nextY] = signaturePath[currentPoint];
-        
-        const x = prevX + (nextX - prevX) * progress;
-        const y = prevY + (nextY - prevY) * progress;
-        
-        ctx.lineTo(x * canvas.width, y * canvas.height);
       }
       
       ctx.stroke();
@@ -135,14 +140,12 @@ const Hero = () => {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] hero-gradient"></div>
       </div>
       
-      {/* Particles effect would go here - implemented in Index.tsx with Three.js */}
-      
       <div className="container mx-auto px-4 z-10">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            initial="hidden"
+            animate="visible"
+            variants={fadeInVariants}
           >
             <h1 className="text-4xl md:text-7xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
               Arpit Singhal
@@ -157,20 +160,20 @@ const Hero = () => {
             </div>
             
             <motion.p 
-              className="text-xl md:text-2xl text-foreground/80 mb-8"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5, duration: 0.8 }}
+              className="text-xl md:text-2xl text-foreground/80 mb-8"
             >
               Powering Organizational Growth with <br className="hidden md:block" />
               <span className="text-primary font-medium">Cloud Native</span> and <span className="text-primary font-medium">AI Software</span>
             </motion.p>
             
             <motion.div 
-              className="flex flex-col md:flex-row justify-center gap-4 md:gap-6"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.7, duration: 0.8 }}
+              className="flex flex-col md:flex-row justify-center gap-4 md:gap-6"
             >
               <Button size="lg" className="rounded-full px-8">
                 Explore Projects

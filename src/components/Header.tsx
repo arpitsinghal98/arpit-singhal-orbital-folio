@@ -9,6 +9,9 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { socialLinks } from '@/config';
+import { navigationItems } from '@/utils/navigation';
+import { fadeInVariants } from '@/utils/animation';
 
 const Header = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -44,14 +47,14 @@ const Header = () => {
         </motion.div>
 
         <nav className="flex items-center space-x-1 md:space-x-4">
-          {["Projects", "Skills", "Resume", "Contact"].map((item) => (
+          {navigationItems.map((item) => (
             <motion.a
-              key={item}
-              href={`#${item.toLowerCase()}`}
+              key={item.name}
+              href={item.href}
               className="hidden md:inline-block text-sm px-3 py-2 hover:text-primary transition-colors duration-200"
               whileHover={{ scale: 1.05 }}
             >
-              {item}
+              {item.name}
             </motion.a>
           ))}
 
@@ -62,7 +65,7 @@ const Header = () => {
             transition={{ delay: 0.5 }}
           >
             <a 
-              href="https://github.com" 
+              href={socialLinks.github} 
               target="_blank" 
               rel="noopener noreferrer"
               className="p-2 rounded-full hover:bg-card/50 transition-colors"
@@ -70,7 +73,7 @@ const Header = () => {
               <Github size={18} />
             </a>
             <a 
-              href="https://linkedin.com" 
+              href={socialLinks.linkedin} 
               target="_blank" 
               rel="noopener noreferrer"
               className="p-2 rounded-full hover:bg-card/50 transition-colors"

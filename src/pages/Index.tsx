@@ -8,10 +8,11 @@ import Resume from '@/components/Resume';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
 import BackgroundParticles from '@/components/BackgroundParticles';
+import { siteMetadata } from '@/config';
 
 const Index = () => {
   useEffect(() => {
-    document.title = "Arpit Singhal | Software Engineer";
+    document.title = siteMetadata.title;
   }, []);
 
   return (
