@@ -68,12 +68,9 @@ export const getScrollAnimation = (direction: 'left' | 'right' | 'up' | 'down', 
 };
 
 // Animation props for custom framer motion components
-export const getScrollBasedAnimation = (scrollYProgress: any, inRange: [number, number], outRange: [number, number]) => {
-  return {
-    transform: scrollYProgress.interpolate({
-      inputRange: inRange,
-      outputRange: outRange,
-      extrapolate: 'clamp'
-    })
-  };
+import { MotionValue, useTransform } from 'framer-motion';
+
+export const useScrollBasedAnimation = (scrollYProgress: MotionValue<number>, inRange: [number, number], outRange: [number, number]) => {
+  const transform = useTransform(scrollYProgress, inRange, outRange);
+  return { transform };
 };

@@ -112,7 +112,6 @@ const ProjectsOrbit = () => {
                     transform: `translate3d(${initialX}px, ${initialY}px, ${initialZ}px)`,
                     zIndex: initialZ < 0 ? 0 : 1,
                   }}
-                  initial={false}
                   animate={
                     orbitPaused 
                       ? {} 
