@@ -56,9 +56,9 @@ const Hero = () => {
 
     const drawSignature = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
+
       ctx.beginPath();
-      
+
       // Only attempt to draw if we have points to work with
       if (signaturePath.length > 0) {
         for (let i = 0; i < currentPoint && i < signaturePath.length; i++) {
@@ -69,38 +69,38 @@ const Hero = () => {
             ctx.lineTo(x * canvas.width, y * canvas.height);
           }
         }
-        
+
         if (currentPoint < signaturePath.length) {
           const [prevX, prevY] = signaturePath[currentPoint > 0 ? currentPoint - 1 : 0];
           const [nextX, nextY] = signaturePath[currentPoint];
-          
+
           const x = prevX + (nextX - prevX) * progress;
           const y = prevY + (nextY - prevY) * progress;
-          
+
           ctx.lineTo(x * canvas.width, y * canvas.height);
         }
       }
-      
+
       ctx.stroke();
-      
+
       progress += 0.05;
       if (progress >= 1) {
         progress = 0;
         currentPoint++;
-        
+
         if (currentPoint >= signaturePath.length) {
           // Add glitch effect when signature is complete
           setTimeout(() => {
             const glitchInterval = setInterval(() => {
               ctx.clearRect(0, 0, canvas.width, canvas.height);
-              
+
               // Draw with random offset for glitch effect
               ctx.beginPath();
               for (let i = 0; i < signaturePath.length; i++) {
                 const [x, y] = signaturePath[i];
                 const offsetX = x + (Math.random() * 0.01 - 0.005);
                 const offsetY = y + (Math.random() * 0.01 - 0.005);
-                
+
                 if (i === 0) {
                   ctx.moveTo(offsetX * canvas.width, offsetY * canvas.height);
                 } else {
@@ -109,7 +109,7 @@ const Hero = () => {
               }
               ctx.stroke();
             }, 50);
-            
+
             // Stop glitch effect after a short time
             setTimeout(() => {
               clearInterval(glitchInterval);
@@ -119,7 +119,7 @@ const Hero = () => {
           }, 1000);
         }
       }
-      
+
       requestAnimationFrame(drawSignature);
     };
 
@@ -134,32 +134,33 @@ const Hero = () => {
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
       {/* Background grid pattern */}
       <div className="absolute inset-0 grid-pattern opacity-20 z-0"></div>
-      
+
       {/* Animated gradient background */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] hero-gradient"></div>
       </div>
-      
+
       <div className="container mx-auto px-4 z-10">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div
             initial="hidden"
             animate="visible"
             variants={fadeInVariants}
+            className="overflow-visible"
           >
-            <h1 className="text-4xl md:text-7xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
+            <h1 className="text-4xl md:text-7xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent leading-tight md:leading-[1.25]">
               Arpit Singhal
             </h1>
-            
+
             {/* Signature canvas */}
             <div className="relative h-32 mb-6">
-              <canvas 
-                ref={canvasRef} 
+              <canvas
+                ref={canvasRef}
                 className="absolute inset-0 w-full h-full"
               ></canvas>
             </div>
-            
-            <motion.p 
+
+            <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5, duration: 0.8 }}
@@ -168,8 +169,8 @@ const Hero = () => {
               Powering Organizational Growth with <br className="hidden md:block" />
               <span className="text-primary font-medium">Cloud Native</span> and <span className="text-primary font-medium">AI Software</span>
             </motion.p>
-            
-            <motion.div 
+
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.7, duration: 0.8 }}
@@ -185,8 +186,8 @@ const Hero = () => {
           </motion.div>
         </div>
       </div>
-      
-      <motion.div 
+
+      <motion.div
         className="absolute bottom-10 left-1/2 -translate-x-1/2 cursor-pointer"
         animate={{ y: [0, 10, 0] }}
         transition={{ duration: 1.5, repeat: Infinity }}

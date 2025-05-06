@@ -3,14 +3,14 @@
 
 // Social links
 export const socialLinks = {
-  github: "https://github.com",
-  linkedin: "https://linkedin.com",
-  trailhead: "https://trailblazer.me"
+  github: "https://github.com/arpitsinghal98",
+  linkedin: "https://linkedin.com/in/arpitsinghal98",
+  trailhead: "https://www.salesforce.com/trailblazer/arpitsinghal98"
 };
 
 // Contact information
 export const contactInfo = {
-  email: "arpit.singhal@example.com"
+  email: "arpitsinghal98@outlook.com"
 };
 
 // Site metadata
