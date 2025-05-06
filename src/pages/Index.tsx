@@ -13,6 +13,31 @@ import { siteMetadata } from '@/config';
 const Index = () => {
   useEffect(() => {
     document.title = siteMetadata.title;
+
+    // Re-trigger animations when scrolling up and down
+    const handleScroll = () => {
+      const sections = document.querySelectorAll('section');
+      sections.forEach(section => {
+        const sectionTop = section.getBoundingClientRect().top;
+        const sectionHeight = section.offsetHeight;
+        const windowHeight = window.innerHeight;
+        
+        // Calculate when section is in view
+        if (sectionTop < windowHeight * 0.75 && sectionTop > -sectionHeight * 0.5) {
+          section.classList.add('in-view');
+        } else {
+          section.classList.remove('in-view');
+        }
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    // Initial check
+    handleScroll();
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   return (

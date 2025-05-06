@@ -1,5 +1,6 @@
+
 import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { Github, ExternalLink, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { projects, Project } from '@/data/projects';
@@ -9,6 +10,7 @@ const ProjectsOrbit = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [orbitPaused, setOrbitPaused] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
   
   const handleProjectClick = (project: Project) => {
     setSelectedProject(project);
@@ -41,8 +43,21 @@ const ProjectsOrbit = () => {
     };
   }, [orbitPaused]);
 
+  // Animation for section when scrolling into view
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"]
+  });
+
+  const scale = useTransform(scrollYProgress, [0, 0.5], [0.8, 1]);
+  const opacity = useTransform(scrollYProgress, [0, 0.3], [0, 1]);
+
   return (
-    <section id="projects" className="relative min-h-screen flex items-center justify-center py-20">
+    <section 
+      id="projects" 
+      className="relative min-h-screen flex items-center justify-center py-20"
+      ref={sectionRef}
+    >
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] hero-gradient opacity-30"></div>
       </div>
@@ -52,7 +67,7 @@ const ProjectsOrbit = () => {
           initial="hidden"
           whileInView="visible"
           variants={fadeInUpVariant}
-          viewport={{ once: true }}
+          viewport={{ once: false, amount: 0.3 }}
           className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-5xl font-bold mb-4">
@@ -63,7 +78,14 @@ const ProjectsOrbit = () => {
           </p>
         </motion.div>
         
-        <div className="orbit-container relative mx-auto" ref={containerRef} style={{ transformStyle: 'preserve-3d', perspective: '1000px' }}>
+        <motion.div 
+          style={{ scale, opacity }}
+          className="orbit-container relative mx-auto" 
+          ref={containerRef} 
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8 }}
+        >
           {/* Central core */}
           <motion.div
             className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-primary/20 rounded-full flex items-center justify-center z-10"
@@ -77,6 +99,9 @@ const ProjectsOrbit = () => {
           <div className="relative w-[300px] h-[300px] mx-auto" style={{ transformStyle: 'preserve-3d' }}>
             {projects.map((project, index) => {
               const { x, y, z } = calculateOrbitPosition(index, projects.length, 150);
+              const initialX = x;
+              const initialY = y;
+              const initialZ = z;
               
               return (
                 <motion.div
@@ -84,15 +109,21 @@ const ProjectsOrbit = () => {
                   className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-card/80 rounded-lg cursor-pointer backdrop-blur-sm hover:scale-110 transition-transform duration-300 flex items-center justify-center glass-card border-primary/30"
                   style={{
                     transformStyle: 'preserve-3d',
-                    transform: `translate3d(${x}px, ${y}px, ${z}px)`,
-                    zIndex: z < 0 ? 0 : 1,
+                    transform: `translate3d(${initialX}px, ${initialY}px, ${initialZ}px)`,
+                    zIndex: initialZ < 0 ? 0 : 1,
                   }}
                   initial={false}
                   animate={
                     orbitPaused 
                       ? {} 
                       : { 
-                          transform: `translate3d(${x}px, ${y}px, ${z}px) rotateY(${index * (360 / projects.length)}deg)`,
+                          transform: [
+                            `translate3d(${initialX}px, ${initialY}px, ${initialZ}px)`,
+                            `translate3d(${-initialY}px, ${initialX}px, ${initialZ}px)`,
+                            `translate3d(${-initialX}px, ${-initialY}px, ${initialZ}px)`,
+                            `translate3d(${initialY}px, ${-initialX}px, ${initialZ}px)`,
+                            `translate3d(${initialX}px, ${initialY}px, ${initialZ}px)`,
+                          ],
                           transition: { 
                             duration: 20, 
                             repeat: Infinity, 
@@ -100,7 +131,7 @@ const ProjectsOrbit = () => {
                           }
                         }
                   }
-                  whileHover={{ scale: 1.2 }}
+                  whileHover={{ scale: 1.2, zIndex: 10 }}
                   onClick={() => handleProjectClick(project)}
                 >
                   <div className="text-primary font-bold">{project.id}</div>
@@ -185,7 +216,7 @@ const ProjectsOrbit = () => {
               </motion.div>
             )}
           </AnimatePresence>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

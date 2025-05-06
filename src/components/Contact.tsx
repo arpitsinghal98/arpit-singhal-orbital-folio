@@ -1,6 +1,6 @@
 
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Github, Linkedin, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,6 +17,17 @@ const Contact = () => {
     message: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"]
+  });
+
+  // Transform values for left and right panels
+  const leftPanelX = useTransform(scrollYProgress, [0.1, 0.4], [-100, 0]);
+  const rightPanelX = useTransform(scrollYProgress, [0.1, 0.4], [100, 0]);
+  const opacity = useTransform(scrollYProgress, [0.1, 0.3], [0, 1]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -39,7 +50,7 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="py-20 relative">
+    <section id="contact" className="py-20 relative" ref={sectionRef}>
       <div className="absolute inset-0 grid-pattern opacity-20 z-0"></div>
       
       <div className="container mx-auto px-4 z-10 relative">
@@ -47,7 +58,7 @@ const Contact = () => {
           initial="hidden"
           whileInView="visible"
           variants={fadeInUpVariant}
-          viewport={{ once: true }}
+          viewport={{ once: false, amount: 0.3 }}
           className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-5xl font-bold mb-4">
@@ -62,10 +73,7 @@ const Contact = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Contact Form */}
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
+              style={{ x: leftPanelX, opacity }}
               className="glass-card rounded-xl p-6 md:p-8"
             >
               <h3 className="text-xl font-semibold mb-6">Send a Message</h3>
@@ -130,10 +138,7 @@ const Contact = () => {
             
             {/* Contact Information */}
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
+              style={{ x: rightPanelX, opacity }}
               className="flex flex-col justify-between"
             >
               <div className="glass-card rounded-xl p-6 md:p-8 mb-8">

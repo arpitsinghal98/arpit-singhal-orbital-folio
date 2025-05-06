@@ -47,3 +47,33 @@ export const calculateOrbitPosition = (index: number, total: number, radius: num
 
   return { x, y, z };
 };
+
+// Scroll animation utilities
+export const getScrollAnimation = (direction: 'left' | 'right' | 'up' | 'down', distance = 100) => {
+  const x = direction === 'left' ? -distance : direction === 'right' ? distance : 0;
+  const y = direction === 'up' ? -distance : direction === 'down' ? distance : 0;
+  
+  return {
+    hidden: { opacity: 0, x, y },
+    visible: { 
+      opacity: 1, 
+      x: 0, 
+      y: 0,
+      transition: { 
+        duration: animationSettings.defaultDuration,
+        ease: "easeOut" 
+      }
+    }
+  };
+};
+
+// Animation props for custom framer motion components
+export const getScrollBasedAnimation = (scrollYProgress: any, inRange: [number, number], outRange: [number, number]) => {
+  return {
+    transform: scrollYProgress.interpolate({
+      inputRange: inRange,
+      outputRange: outRange,
+      extrapolate: 'clamp'
+    })
+  };
+};
