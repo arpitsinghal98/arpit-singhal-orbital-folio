@@ -39,14 +39,13 @@ export const scaleInVariant = {
 };
 
 // Function to calculate orbit position
-export const calculateOrbitPosition = (index: number, total: number, radius: number) => {
-  const angle = (index / total) * Math.PI * 2;
-  const x = Math.cos(angle) * radius;
-  const y = Math.sin(angle) * radius * 0.3; // Flatten the orbit a bit
-  const z = Math.sin(angle) * radius;
-
+export function calculateOrbitPosition(index: number, total: number, radius: number) {
+  const angle = (index / total) * 2 * Math.PI;
+  const x = radius * Math.cos(angle);
+  const y = radius * Math.sin(angle);
+  const z = 0; // optional: can be used for 3D effect
   return { x, y, z };
-};
+}
 
 // Scroll animation utilities
 export const getScrollAnimation = (direction: 'left' | 'right' | 'up' | 'down', distance = 100) => {
